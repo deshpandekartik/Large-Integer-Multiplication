@@ -136,12 +136,30 @@ class MatrixMultiply
                 */
                 MATRIX stras_rec(MATRIX matrix1 , MATRIX matrix2 ,int n)
                 {
+			MATRIX result = MATRIX(matrix1.row, matrix1.row);
 			if ( n == 1 )
 			{
-				cout << "here";
-				return matrix2;
+				result.matrix[0][0] = matrix1.matrix[0][0] + matrix2.matrix[0][0];
+				return result;
 			}
+			else if ( n%2 != 0 )
+			{
+				int n1 = n + 1;
+				MATRIX newa = MATRIX(n1,n1);
+				MATRIX newb = MATRIX(n1,n1);
 
+				for ( int i = 0 ; i < n1 ; i++ )
+				{
+					for ( int j = 0; j < n1; j ++ )
+					{
+						newa.matrix[i][j] = matrix1.matrix[i][j];
+						newb.matrix[i][j] = matrix2.matrix[i][j];
+					}
+				}
+				MATRIX res = stras_rec(newa, newb, n1);
+				return res;
+				
+			}
 
                         // break the matrix into parts
 			MATRIX a11 = MATRIX(n/2,n/2);
@@ -178,7 +196,7 @@ class MatrixMultiply
                         */
 
 			MATRIX p1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);
-
+			display_matrix(p1);
                 }
 
                 /*
