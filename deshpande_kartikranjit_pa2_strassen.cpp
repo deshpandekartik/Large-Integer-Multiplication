@@ -17,24 +17,26 @@ class MatrixMultiply
                         MATRIX(int rowu, int colu) : row(rowu), col(colu) { }
                 };
 
-		MATRIX *first = new MATRIX(0,0);
-		MATRIX *second = new MATRIX(0,0);
-		MATRIX *result_normal = new MATRIX(0,0);
-		MATRIX *result_strassen = new MATRIX(0,0);
+		MATRIX first = MATRIX(0,0);
+		MATRIX second = MATRIX(0,0);
+		MATRIX result_normal = MATRIX(0,0);
+		MATRIX result_strassen = MATRIX(0,0);
+		int size_of_n; 
 
 		/*
 		** Constructor , initialize rows and columns of all matrices
 		*/
 		MatrixMultiply(int arg)
 		{
-			first->row = arg;
-			first->col = arg;	
-			second->row = arg;
-			second->col = arg;
-			result_normal->row = arg;
-			result_normal->col = arg;
-			result_strassen->row = arg;
-			result_strassen->col = arg;
+			first.row = arg;
+			first.col = arg;	
+			second.row = arg;
+			second.col = arg;
+			result_normal.row = arg;
+			result_normal.col = arg;
+			result_strassen.row = arg;
+			result_strassen.col = arg;
+			size_of_n = arg;
 		}
 	
 		/*
@@ -55,28 +57,28 @@ class MatrixMultiply
 		void input_matrix()
 		{
 			// first matrix
-			for (int i = 0; i < first->row; i++ ) 	
+			for (int i = 0; i < first.row; i++ ) 	
 			{
-				for ( int j = 0; j < second->col; j++ )
+				for ( int j = 0; j < second.col; j++ )
 				{
-					first->matrix[i][j] = generate_random_no();
-					second->matrix[i][j] = generate_random_no();
+					first.matrix[i][j] = generate_random_no();
+					second.matrix[i][j] = generate_random_no();
 				}
 			}
-			initialize_matrix(second);
+			//initialize_matrix(&second);
 			display_matrix(second);
 		}
 
                 /*
                 ** Display a matrix
                 */
-                void display_matrix(MATRIX *arg_matrix)
+                void display_matrix(MATRIX arg_matrix)
                 {
-                        for (int i = 0; i < arg_matrix->row; i++ )
+                        for (int i = 0; i < arg_matrix.row; i++ )
                         {
-                                for ( int j = 0; j < arg_matrix->col; j++ )
+                                for ( int j = 0; j < arg_matrix.col; j++ )
                                 {
-                                        cout << arg_matrix->matrix[i][j] << " ";
+                                        cout << arg_matrix.matrix[i][j] << " ";
                                 }
                                 cout << "\n";
                         }
@@ -97,15 +99,36 @@ class MatrixMultiply
                         }
                 }
 
+                /*
+                ** Function to perform normal multiplication
+                */
+                void perform_normal_multiplication()
+                {
+                        // initialize all elements of result matrix to 0
+			initialize_matrix(&result_normal);
+
+
+                        // Multiply both matrices
+                        for (int i = 0; i < first.row; i++ )
+                        {
+                                for ( int j = 0; j < second.row; j++ )
+                                {
+                                        for ( int k = 0; k < first.row; k ++ )
+                                        {
+                                                result_normal.matrix[i][j] = result_normal.matrix[i][j] + first.matrix[i][k] * second.matrix[k][j] ;
+                                        }
+                                }
+                        }
+                        display_matrix(result_normal);
+                }
+
+
 		/*
                 ** Perform strassens multiplication
                 */
                 void perform_strassens_multiplication()
                 {
-                        // initialize resultant matrix
-                        initialize_matrix(result_matrix_strassen, size_of_n);
-
-                        stras_rec(first_matrix, second_matrix, result_matrix_strassen, size_of_n);
+                        stras_rec(first, second, result_strassen, size_of_n);
                 }
 
 
@@ -125,8 +148,6 @@ class MatrixMultiply
                         MATRIX b12 = MATRIX(n/2,n/2);
                         MATRIX b21 = MATRIX(n/2,n/2);
                         MATRIX b22 = MATRIX(n/2,n/2);
-
-			cout << a11.row;
 
                 }
 
@@ -153,5 +174,7 @@ int main(int argc, char * argv[])
 	int input_data_n ;
 	MatrixMultiply m1(4); 
 	m1.input_matrix();	
+	m1.perform_normal_multiplication();
+	m1.perform_strassens_multiplication();
 }
 
