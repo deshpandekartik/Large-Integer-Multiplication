@@ -46,7 +46,6 @@ class MatrixMultiply
                                         second_matrix[i][j] = generate_random_no();
                                 }
                         }
-			//display_matrix();
 		}
 
 		/*
@@ -143,6 +142,24 @@ class MatrixMultiply
                         divide_matrix(first_matrix, b12, 0 , n/2, n/2, n);
                         divide_matrix(first_matrix, b21, n/2 , n, 0, n/2);
                         divide_matrix(first_matrix, b22, n/2 , n, n/2, n);
+
+			/*
+			Computing all these 
+			m1 = (a11 + a22)(b11+b22)
+			m2 = (a21 + a22) b11
+			m3 = a11 (b12 – b22) 
+			m4 = a22 (b21 – b11) 
+			m5 = (a11 + a12) b22
+			m6 = (a21 – a11) (b11+b12) 
+			m7 = (a12 – a22)(b21 + b22)
+			*/
+			int m1[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m2[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m3[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m4[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m5[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m6[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int m7[MAX_ARR_SIZE][MAX_ARR_SIZE];
 		}
 
 		/*
