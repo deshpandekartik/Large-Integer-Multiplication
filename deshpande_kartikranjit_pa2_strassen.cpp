@@ -131,8 +131,6 @@ class MatrixMultiply
                         stras_rec(first, second, result_strassen, size_of_n);
                 }
 
-
-
                 /*
                 ** Function to perform strassens multiplication, recursively
                 */
@@ -149,7 +147,39 @@ class MatrixMultiply
                         MATRIX b21 = MATRIX(n/2,n/2);
                         MATRIX b22 = MATRIX(n/2,n/2);
 
+			// divide first matrix into 4 parts , a11,a22,a12,a21
+			divide_matrix(first, &a11, 0 , n/2, 0, n/2);
+			divide_matrix(first, &a12, 0 , n/2, n/2, n);
+                        divide_matrix(first, &a21, n/2 , n, 0, n/2);
+                        divide_matrix(first, &a22, n/2 , n, n/2, n);
+
+                        // divide second matrix into 4 parts , b11,b22,b12,b21
+                        divide_matrix(second, &b11, 0 , n/2, 0, n/2);
+                        divide_matrix(second, &b12, 0 , n/2, n/2, n);
+                        divide_matrix(second, &b21, n/2 , n, 0, n/2);
+                        divide_matrix(second, &b22, n/2 , n, n/2, n);
+
                 }
+
+                /*
+                ** to divide the main matrix into parts
+                */
+                void divide_matrix(MATRIX main , MATRIX *divident, int row_start, int row_end, int col_start, int col_end ) 
+                {
+                        int smalli = 0;
+                        int smallj = 0;
+                        for ( int i = row_start ; i < row_end ; i++  )
+                        {
+                                for ( int j = col_start; j < col_end; j++ )
+                                {
+                                        divident->matrix[smalli][smallj] = main.matrix[i][j];
+                                        smallj = smallj + 1;
+                                }
+                                smalli = smalli + 1;
+                                smallj = 0;
+                        }
+                }
+
 
 };
 
