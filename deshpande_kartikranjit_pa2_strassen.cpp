@@ -98,6 +98,9 @@ class MatrixMultiply
 		*/
 		void perform_strassens_multiplication()
 		{
+			// initialize resultant matrix 
+			initialize_matrix(result_matrix_strassen, size_of_n);
+
 			stras_rec(first_matrix, second_matrix, result_matrix_strassen, size_of_n);
 		}
 
@@ -107,18 +110,27 @@ class MatrixMultiply
 		void stras_rec(int matrix1[MAX_ARR_SIZE][MAX_ARR_SIZE] , int matrix2[MAX_ARR_SIZE][MAX_ARR_SIZE] , int resultmatrix[MAX_ARR_SIZE][MAX_ARR_SIZE] ,int n)
 		{
 			// break the matrix into parts
-			int a11[n/2][n/2];
-			int a12[n/2][n/2];
-			int a21[n/2][n/2];
-			int a22[n/2][n/2];
+			int a11[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int a12[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int a21[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int a22[MAX_ARR_SIZE][MAX_ARR_SIZE];
 
-			int b11[n/2][n/2];
-			int b12[n/2][n/2];
-			int b21[n/2][n/2];
-			int b22[n/2][n/2];	
+			int b11[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int b12[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int b21[MAX_ARR_SIZE][MAX_ARR_SIZE];
+			int b22[MAX_ARR_SIZE][MAX_ARR_SIZE];	
+
 
 			// initialize all the matrices
-			//initialize_matrix(a11,n/2);	
+			initialize_matrix(a11,n/2);
+			initialize_matrix(a12,n/2);
+			initialize_matrix(a21,n/2);
+			initialize_matrix(a22,n/2);
+
+			initialize_matrix(b11,n/2);
+			initialize_matrix(b12,n/2);
+			initialize_matrix(b21,n/2);
+			initialize_matrix(b22,n/2);
 		}
 
 		/*
@@ -130,8 +142,7 @@ class MatrixMultiply
                         {
                                 for ( int j = 0; j < n; j++ )
                                 {
-					//cout << matrix[i][j];
-                              		//matrix[i][j] = 0;
+                              		matrix[i][j] = 0;
                                 }
                         }
 		}
