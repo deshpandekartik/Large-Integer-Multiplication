@@ -7,9 +7,15 @@ using namespace std;
 class MatrixMultiply
 {
 	public:
-		int first_matrix[111][111], second_matrix[111][111], result_matrix_normal[111][111], result_matrix_strassen[111][111];
-		static const int MAX_ARR_SIZE = 111;
-		int size_of_n = 4;
+		struct MATRIX {
+			int matrix[111][111];
+			int row = 0;
+			int col = 0;
+		};
+
+		MATRIX first, second, result_normal, result_strassen;
+                static const int MAX_ARR_SIZE = 111;
+                int size_of_n = 4;
 
 		/*
 		** Returns a randomly generated number
@@ -33,166 +39,10 @@ class MatrixMultiply
 			{
 				for ( int j = 0; j < size_of_n; j++ )
 				{
-					first_matrix[i][j] = generate_random_no();
-					result_matrix_strassen[i][j] = 0;
+					first.matrix[i][j] = generate_random_no();
+					second.matrix[i][j] = generate_random_no();
 				}
 			}
-
-			// Second matrix
-                        for (int i = 0; i < size_of_n; i++ )
-                        {
-                                for ( int j = 0; j < size_of_n; j++ )
-                                {
-                                        second_matrix[i][j] = generate_random_no();
-                                }
-                        }
-		}
-
-		/*
-		** Display a matrix
-		*/	
-		void display_matrix(int arg_matrix[MAX_ARR_SIZE][MAX_ARR_SIZE])
-		{
-			for (int i = 0; i < size_of_n; i++ )
-                        {
-                                for ( int j = 0; j < size_of_n; j++ )
-                                {
-                              		cout << arg_matrix[i][j] << " ";
-                                }
-				cout << "\n";
-                	}
-			cout << "\n";
-		}
-
-		/*
-		** Function to perform normal multiplication
-		*/
-		void perform_normal_multiplication()
-		{
-			// initialize all elements of result matrix to 0 
-			for (int i = 0; i < size_of_n; i++ )
-                        {
-                                for ( int j = 0; j < size_of_n; j++ )
-                                {
-                                        result_matrix_normal[i][j] = 0 ;
-                                }
-                        }
-
-			// Multiply both matrices
-			for (int i = 0; i < size_of_n; i++ )
-                        {
-                                for ( int j = 0; j < size_of_n; j++ )
-                                {
-					for ( int k = 0; k < size_of_n; k ++ )
-					{
-                                        	result_matrix_normal[i][j] = result_matrix_normal[i][j] + first_matrix[i][j] * second_matrix[i][j] ;
-					}
-                                }
-                        }
-			display_matrix(result_matrix_normal);
-		}
-	
-		/*	
-		** Perform strassens multiplication
-		*/
-		void perform_strassens_multiplication()
-		{
-			// initialize resultant matrix 
-			initialize_matrix(result_matrix_strassen, size_of_n);
-
-			stras_rec(first_matrix, second_matrix, result_matrix_strassen, size_of_n);
-		}
-
-		/*
-		** Function to perform strassens multiplication, recursively
-		*/
-		void stras_rec(int matrix1[MAX_ARR_SIZE][MAX_ARR_SIZE] , int matrix2[MAX_ARR_SIZE][MAX_ARR_SIZE] , int resultmatrix[MAX_ARR_SIZE][MAX_ARR_SIZE] ,int n)
-		{
-			// break the matrix into parts
-			int a11[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int a12[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int a21[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int a22[MAX_ARR_SIZE][MAX_ARR_SIZE];
-
-			int b11[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int b12[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int b21[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int b22[MAX_ARR_SIZE][MAX_ARR_SIZE];	
-
-
-			// initialize all the matrices
-			initialize_matrix(a11,n/2);
-			initialize_matrix(a12,n/2);
-			initialize_matrix(a21,n/2);
-			initialize_matrix(a22,n/2);
-
-			initialize_matrix(b11,n/2);
-			initialize_matrix(b12,n/2);
-			initialize_matrix(b21,n/2);
-			initialize_matrix(b22,n/2);
-
-			// divide first matrix into 4 parts , a11,a22,a12,a21
-                        divide_matrix(first_matrix, a11, 0 , n/2, 0, n/2);
-			divide_matrix(first_matrix, a12, 0 , n/2, n/2, n);
-			divide_matrix(first_matrix, a21, n/2 , n, 0, n/2);
-			divide_matrix(first_matrix, a22, n/2 , n, n/2, n);	
-
-			// divide second matrix into 4 parts , b11,b22,b12,b21
-			divide_matrix(first_matrix, b11, 0 , n/2, 0, n/2);
-                        divide_matrix(first_matrix, b12, 0 , n/2, n/2, n);
-                        divide_matrix(first_matrix, b21, n/2 , n, 0, n/2);
-                        divide_matrix(first_matrix, b22, n/2 , n, n/2, n);
-
-			/*
-			Computing all these 
-			m1 = (a11 + a22)(b11+b22)
-			m2 = (a21 + a22) b11
-			m3 = a11 (b12 – b22) 
-			m4 = a22 (b21 – b11) 
-			m5 = (a11 + a12) b22
-			m6 = (a21 – a11) (b11+b12) 
-			m7 = (a12 – a22)(b21 + b22)
-			*/
-			int m1[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m2[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m3[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m4[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m5[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m6[MAX_ARR_SIZE][MAX_ARR_SIZE];
-			int m7[MAX_ARR_SIZE][MAX_ARR_SIZE];
-		}
-
-		/*
-		** Initializes all elements in a matrix to 0
-		*/
-		void initialize_matrix(int matrix[MAX_ARR_SIZE][MAX_ARR_SIZE] , int n)
-		{
-			for (int i = 0; i < n; i++ )
-                        {
-                                for ( int j = 0; j < n; j++ )
-                                {
-                              		matrix[i][j] = 0;
-                                }
-                        }
-		}
-		
-		/*
-		** to divide the main matrix into parts
-		*/
-		void divide_matrix(int main[MAX_ARR_SIZE][MAX_ARR_SIZE], int divident[MAX_ARR_SIZE][MAX_ARR_SIZE], int row_start, int row_end, int col_start, int col_end)
-		{
-			int smalli = 0;
-			int smallj = 0;
-			for ( int i = row_start ; i < row_end ; i++  )
-			{
-				for ( int j = col_start; j < col_end; j++ )
-				{
-					divident[smalli][smallj] = main[i][j];
-					smallj = smallj + 1;
-				}
-				smalli = smalli + 1;
-				smallj = 0;
-			}  
 		}
 };
 
@@ -217,7 +67,5 @@ int main(int argc, char * argv[])
 	int input_data_n ;
 	MatrixMultiply m1; 
 	m1.input_matrix();	
-	m1.perform_normal_multiplication();
-	m1.perform_strassens_multiplication();
 }
 
