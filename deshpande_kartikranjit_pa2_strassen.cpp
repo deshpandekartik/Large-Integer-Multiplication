@@ -132,18 +132,17 @@ class MatrixMultiply
 			initialize_matrix(b21,n/2);
 			initialize_matrix(b22,n/2);
 
-			display_matrix(first_matrix);
-			// divide first matrix into 4 parts , a11,a22,a12,a21	
-			display_matrix(a11);
-			divide_matrix(first_matrix, a11, 0 , n/2, 0, n/2);
-			display_matrix(a11);
-
-
 			// divide first matrix into 4 parts , a11,a22,a12,a21
                         divide_matrix(first_matrix, a11, 0 , n/2, 0, n/2);
-			
+			divide_matrix(first_matrix, a12, 0 , n/2, n/2, n);
+			divide_matrix(first_matrix, a21, n/2 , n, 0, n/2);
+			divide_matrix(first_matrix, a22, n/2 , n, n/2, n);	
 
 			// divide second matrix into 4 parts , b11,b22,b12,b21
+			divide_matrix(first_matrix, b11, 0 , n/2, 0, n/2);
+                        divide_matrix(first_matrix, b12, 0 , n/2, n/2, n);
+                        divide_matrix(first_matrix, b21, n/2 , n, 0, n/2);
+                        divide_matrix(first_matrix, b22, n/2 , n, n/2, n);
 		}
 
 		/*
