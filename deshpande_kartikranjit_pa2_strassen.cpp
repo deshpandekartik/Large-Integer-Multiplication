@@ -128,14 +128,21 @@ class MatrixMultiply
                 */
                 void perform_strassens_multiplication()
                 {
-                        stras_rec(first, second, result_strassen, size_of_n);
+                        stras_rec(first, second,  size_of_n);
                 }
 
                 /*
                 ** Function to perform strassens multiplication, recursively
                 */
-                void stras_rec(MATRIX matrix1 , MATRIX matrix2 , MATRIX resultmatrix ,int n)
+                MATRIX stras_rec(MATRIX matrix1 , MATRIX matrix2 ,int n)
                 {
+			if ( n == 1 )
+			{
+				cout << "here";
+				return matrix2;
+			}
+
+
                         // break the matrix into parts
 			MATRIX a11 = MATRIX(n/2,n/2);
 			MATRIX a12 = MATRIX(n/2,n/2);
@@ -159,6 +166,19 @@ class MatrixMultiply
                         divide_matrix(second, &b21, n/2 , n, 0, n/2);
                         divide_matrix(second, &b22, n/2 , n, n/2, n);
 
+			/*
+                        Computing all these
+                        m1 = (a11 + a22)(b11+b22)
+                        m2 = (a21 + a22) b11
+                        m3 = a11 (b12 – b22)
+                        m4 = a22 (b21 – b11)
+                        m5 = (a11 + a12) b22
+                        m6 = (a21 – a11) (b11+b12)
+                        m7 = (a12 – a22)(b21 + b22)
+                        */
+
+			MATRIX p1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);
+
                 }
 
                 /*
@@ -178,6 +198,22 @@ class MatrixMultiply
                                 smalli = smalli + 1;
                                 smallj = 0;
                         }
+                }
+		
+		/*
+                ** Adding two matrices
+                */
+                MATRIX add_matrices(MATRIX mat1 , MATRIX mat2)
+                {
+			MATRIX result_mat = MATRIX(mat1.row , mat1.row);
+                        for ( int i = 0; i < mat1.row; i++ )
+                        {
+                                for ( int j = 0 ; j < mat2.col; j++ )
+                                {
+                                        result_mat.matrix[i][j] =  mat1.matrix[i][j] + mat2.matrix[i][j];
+                                }
+                        }
+                        return result_mat;
                 }
 
 
