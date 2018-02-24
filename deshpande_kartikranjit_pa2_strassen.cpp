@@ -9,14 +9,12 @@ class MatrixMultiply
 	public:
 		struct MATRIX {
 			int matrix[111][111];
-			int row = 0;
-			int col = 0;
+			int row = 4;
+			int col = 4;
 		};
 
 		MATRIX first, second, result_normal, result_strassen;
-                static const int MAX_ARR_SIZE = 111;
-                int size_of_n = 4;
-
+		
 		/*
 		** Returns a randomly generated number
 		*/
@@ -35,15 +33,33 @@ class MatrixMultiply
 		void input_matrix()
 		{
 			// first matrix
-			for (int i = 0; i < size_of_n; i++ ) 	
+			for (int i = 0; i < first.row; i++ ) 	
 			{
-				for ( int j = 0; j < size_of_n; j++ )
+				for ( int j = 0; j < second.col; j++ )
 				{
 					first.matrix[i][j] = generate_random_no();
 					second.matrix[i][j] = generate_random_no();
 				}
 			}
+			display_matrix(second);
 		}
+
+                /*
+                ** Display a matrix
+                */
+                void display_matrix(MATRIX arg_matrix)
+                {
+                        for (int i = 0; i < arg_matrix.row; i++ )
+                        {
+                                for ( int j = 0; j < arg_matrix.col; j++ )
+                                {
+                                        cout << arg_matrix.matrix[i][j] << " ";
+                                }
+                                cout << "\n";
+                        }
+                        cout << "\n";
+                }
+
 };
 
 int validate_input_data_n(int n)
