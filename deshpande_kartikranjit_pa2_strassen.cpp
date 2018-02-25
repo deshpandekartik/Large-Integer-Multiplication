@@ -66,7 +66,6 @@ class MatrixMultiply
 				}
 			}
 			//initialize_matrix(&second);
-			display_matrix(second);
 		}
 
                 /*
@@ -128,7 +127,10 @@ class MatrixMultiply
                 */
                 void perform_strassens_multiplication()
                 {
-                        stras_rec(first, second,  size_of_n);
+			MATRIX resultant = MATRIX(size_of_n,size_of_n);
+			
+                        resultant = stras_rec(first, second,  size_of_n);
+			display_matrix(resultant);
                 }
 
                 /*
@@ -139,26 +141,8 @@ class MatrixMultiply
 			MATRIX result = MATRIX(matrix1.row, matrix1.row);
 			if ( n == 1 )
 			{
-				result.matrix[0][0] = matrix1.matrix[0][0] + matrix2.matrix[0][0];
+				result.matrix[0][0] = matrix1.matrix[0][0] * matrix2.matrix[0][0];
 				return result;
-			}
-			else if ( n%2 != 0 )
-			{
-				int n1 = n + 1;
-				MATRIX newa = MATRIX(n1,n1);
-				MATRIX newb = MATRIX(n1,n1);
-
-				for ( int i = 0 ; i < n1 ; i++ )
-				{
-					for ( int j = 0; j < n1; j ++ )
-					{
-						newa.matrix[i][j] = matrix1.matrix[i][j];
-						newb.matrix[i][j] = matrix2.matrix[i][j];
-					}
-				}
-				MATRIX res = stras_rec(newa, newb, n1);
-				return res;
-				
 			}
 
                         // break the matrix into parts
@@ -195,9 +179,52 @@ class MatrixMultiply
                         m7 = (a12 – a22)(b21 + b22)
                         */
 
-			MATRIX p1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);
-			display_matrix(p1);
+			MATRIX m1 = MATRIX(n/2,n/2) , m2 = MATRIX(n/2,n/2), m3 = MATRIX(n/2,n/2), m4 = MATRIX(n/2,n/2) , m5 = MATRIX(n/2,n/2), m6 = MATRIX(n/2,n/2), m7 = MATRIX(n/2,n/2); 
+			m1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);	// m1 = (a11 + a22)(b11+b22)
+			m2 = stras_rec(add_matrices(a21,a22),b11, n/2);		// m2 = (a21 + a22) b11
+			m3 = stras_rec(a11,sub_matrices(b12,b22), n/2);		// m3 = a11 (b12 – b22)
+			m4 = stras_rec(a22,sub_matrices(b21,b11), n/2);		// m4 = a22 (b21 – b11)
+			m5 = stras_rec(add_matrices(a11,a12),b22, n/2);		//  m5 = (a11 + a12) b22
+			m6 = stras_rec(sub_matrices(a21,a11),add_matrices(b11,b12), n/2);	// m6 = (a21 – a11) (b11+b12)
+			m7 = stras_rec(sub_matrices(a12,a22),add_matrices(b21,b22), n/2);	// m7 = (a12 – a22)(b21 + b22)
+
+			MATRIX c11 = MATRIX(n/2,n/2), c12 = MATRIX(n/2,n/2) , c21 = MATRIX(n/2,n/2) , c22 = MATRIX(n/2,n/2);
+
+			c11 = add_matrices(sub_matrices(add_matrices(m1, m4), m5), m7);
+			c12 = add_matrices(m3, m5);
+			c21 = add_matrices(m2, m4);
+			c22 = add_matrices(sub_matrices(add_matrices(m1, m3), m2), m6);
+				
+			//display_matrix(C22);
+			
+			copy_matrix(&result , c11, 0, n/2 , 0, n/2);
+			copy_matrix(&result , c12, 0, n/2, n/2, n);
+			copy_matrix(&result , c21, n/2, n, 0, n/2);
+			copy_matrix(&result , c22, n/2, n, n/2, n);
+
+			return result;
                 }
+		
+		/*
+                ** to copy parts of matrix to resultant
+                */
+                void copy_matrix(MATRIX *main , MATRIX small_part, int row_start, int row_end, int col_start, int col_end )
+                {
+                        int smalli = 0;
+                        int smallj = 0;
+                        for ( int i = row_start ; i < row_end ; i++  )
+                        {
+                                for ( int j = col_start; j < col_end; j++ )
+                                {
+					main->matrix[i][j] = small_part.matrix[smalli][smallj];
+                                        smallj = smallj + 1;
+                                }
+                                smalli = smalli + 1;
+                                smallj = 0;
+                        }
+                }
+
+	
 
                 /*
                 ** to divide the main matrix into parts
@@ -234,6 +261,21 @@ class MatrixMultiply
                         return result_mat;
                 }
 
+		/*
+                ** Substracting two matrices
+                */
+                MATRIX sub_matrices(MATRIX mat1 , MATRIX mat2)
+                {
+                        MATRIX result_mat = MATRIX(mat1.row , mat1.row);
+                        for ( int i = 0; i < mat1.row; i++ )
+                        {
+                                for ( int j = 0 ; j < mat2.col; j++ )
+                                {
+                                        result_mat.matrix[i][j] =  mat1.matrix[i][j] - mat2.matrix[i][j];
+                                }
+                        }
+                        return result_mat;
+                }
 
 };
 
