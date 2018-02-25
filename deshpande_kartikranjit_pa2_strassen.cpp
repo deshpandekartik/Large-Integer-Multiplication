@@ -3,8 +3,6 @@
 #include <ctime>
 using namespace std;
 
-
-
 class MatrixMultiply
 {
 	public:
@@ -37,6 +35,18 @@ class MatrixMultiply
 			result_strassen.row = arg;
 			result_strassen.col = arg;
 			size_of_n = arg;
+
+			int matrix[4][4] = { { 1, 2, 3, 4} , { 1, 2, 3, 4} , {1 ,2 ,3 ,4}, {1, 2, 3, 4} };
+			int matrix1[4][4] = { { 1, 2, 3, 4} , { 1, 2, 3, 4} , {1 ,2 ,3 ,4}, {1, 2, 3, 4} };
+
+			for ( int i = 0 ; i < arg; i ++)
+			{
+				for ( int j = 0 ; j < arg ; j ++)
+				{
+					first.matrix[i][j] = matrix[i][j];
+					second.matrix[i][j] = matrix1[i][j];
+				}
+			}
 		}
 	
 		/*
@@ -61,8 +71,8 @@ class MatrixMultiply
 			{
 				for ( int j = 0; j < second.col; j++ )
 				{
-					first.matrix[i][j] = generate_random_no();
-					second.matrix[i][j] = generate_random_no();
+					//first.matrix[i][j] = generate_random_no();
+					//second.matrix[i][j] = generate_random_no();
 				}
 			}
 			//initialize_matrix(&second);
@@ -139,6 +149,7 @@ class MatrixMultiply
                 MATRIX stras_rec(MATRIX matrix1 , MATRIX matrix2 ,int n)
                 {
 			MATRIX result = MATRIX(matrix1.row, matrix1.row);
+			n = matrix1.row;
 			if ( n == 1 )
 			{
 				result.matrix[0][0] = matrix1.matrix[0][0] * matrix2.matrix[0][0];
@@ -188,19 +199,21 @@ class MatrixMultiply
 			m6 = stras_rec(sub_matrices(a21,a11),add_matrices(b11,b12), n/2);	// m6 = (a21 – a11) (b11+b12)
 			m7 = stras_rec(sub_matrices(a12,a22),add_matrices(b21,b22), n/2);	// m7 = (a12 – a22)(b21 + b22)
 
+			//display_matrix(add_matrices(b11,b22));
+
 			MATRIX c11 = MATRIX(n/2,n/2), c12 = MATRIX(n/2,n/2) , c21 = MATRIX(n/2,n/2) , c22 = MATRIX(n/2,n/2);
 
-			c11 = add_matrices(sub_matrices(add_matrices(m1, m4), m5), m7);
-			c12 = add_matrices(m3, m5);
-			c21 = add_matrices(m2, m4);
-			c22 = add_matrices(sub_matrices(add_matrices(m1, m3), m2), m6);
+			c11 = add_matrices(sub_matrices(add_matrices(m1, m4), m5), m7);		// m1 + m4 - m5 + m7
+			c12 = add_matrices(m3, m5);	// m3 + m5
+			c21 = add_matrices(m2, m4);	// m2 + m4 
+			c22 = add_matrices(sub_matrices(add_matrices(m1, m3), m2), m6);	// m1 + m3 - m2 + m6
 				
-			//display_matrix(C22);
+			display_matrix(c11);
 			
-			copy_matrix(&result , c11, 0, n/2 , 0, n/2);
-			copy_matrix(&result , c12, 0, n/2, n/2, n);
-			copy_matrix(&result , c21, n/2, n, 0, n/2);
-			copy_matrix(&result , c22, n/2, n, n/2, n);
+			merge(&result , c11, 0, n/2 , 0, n/2);
+			merge(&result , c12, 0, n/2, n/2, n);
+			merge(&result , c21, n/2, n, 0, n/2);
+			merge(&result , c22, n/2, n, n/2, n);
 
 			return result;
                 }
@@ -208,7 +221,7 @@ class MatrixMultiply
 		/*
                 ** to copy parts of matrix to resultant
                 */
-                void copy_matrix(MATRIX *main , MATRIX small_part, int row_start, int row_end, int col_start, int col_end )
+                void merge(MATRIX *main , MATRIX small_part, int row_start, int row_end, int col_start, int col_end )
                 {
                         int smalli = 0;
                         int smallj = 0;
