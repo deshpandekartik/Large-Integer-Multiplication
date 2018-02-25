@@ -73,14 +73,20 @@ class LargeIntMul
 				return "0";
 			}
 
-			int number_index = divisor.size();
+			int number_start_index = 0 ,number_end_index = divisor.size();
+			bool flag = true;
+			string remainder = "";
 
-			// if number is gt then or equal to divisor proceed with divison else add one more digit				
-			while ( compare(number.substr(0,number_index) , divisor) != 1 )
+			// if number is gt then or equal to divisor proceed with divison else add one more digit
+			if ( compare(number.substr(number_start_index,number_end_index) , divisor) != 1 )
 			{
-				number_index = number_index + 1;
-			} 
-			cout << number.substr(0,number_index);
+				number_end_index = number_end_index + 1;
+			}
+			remainder = to_string(atoi(number.substr(0,number_end_index).c_str()) % atoi(divisor.c_str()));
+			number.erase(0,number_end_index);
+			number.insert(0,remainder);
+				
+			cout << number;
 	
 			return "null";	
 		}		
@@ -118,6 +124,6 @@ class LargeIntMul
 int main(int argc, char * argv[])
 {
        	LargeIntMul m1;
-	cout << m1.division("100","11") << "\n";
+	cout << m1.division("10000","11") << "\n";
 }
 
