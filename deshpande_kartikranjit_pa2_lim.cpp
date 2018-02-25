@@ -44,22 +44,33 @@ class LargeIntMul
                         else
                         {
                                 // both strings are of equal length
-                                if ( atoi(a.c_str()) < atoi(b.c_str()) )
-                                {
-                                        return -1;
-                                }
-                                else
-                                {
-                                        return 1;
-                                }
+
+				for ( int i = 0; i <= a.size(); i ++ )
+				{
+					if ( a[i] > b[i] )
+					{
+						return 1;
+					}
+					else if ( a[i] < b[i] ) {
+						return -1;
+					}
+				}
                         }
                 }
 
+		string division(string number, string divisor)
+		{
+			while ( compare(number , divisor) == 1 )
+			{
+	
+			}
+		}
+
 
 		/*
-		** Dividing two large int strings
+		** Modulus of two large int strings
 		*/
-		string division(string number, string divisor)
+		string modulus(string number, string divisor )
 		{
 			// if in case both number and divisor are equal
 			if ( number == divisor )
@@ -73,22 +84,40 @@ class LargeIntMul
 				return "0";
 			}
 
-			int number_start_index = 0 ,number_end_index = divisor.size();
+			int number_end_index = divisor.size();
 			bool flag = true;
 			string remainder = "";
+			string quotient;
 
-			// if number is gt then or equal to divisor proceed with divison else add one more digit
-			if ( compare(number.substr(number_start_index,number_end_index) , divisor) != 1 )
+			while ( compare(number , divisor) == 1 )  
 			{
-				number_end_index = number_end_index + 1;
+				// if number is gt then or equal to divisor proceed with divison else add one more digit
+				if ( compare(number.substr(0,number_end_index) , divisor) != 1 )
+				{
+					number_end_index = number_end_index + 1;
+					// divisor does not go into quotient , append a 0 to quotient
+					quotient.append("0");
+				}
+				remainder = to_string(atoi(number.substr(0,number_end_index).c_str()) % atoi(divisor.c_str()));
+				quotient.append(to_string(atoi(number.substr(0,number_end_index).c_str()) / atoi(divisor.c_str())));
+				number.erase(0,number_end_index);
+				number.insert(0,remainder);
 			}
-			remainder = to_string(atoi(number.substr(0,number_end_index).c_str()) % atoi(divisor.c_str()));
-			number.erase(0,number_end_index);
-			number.insert(0,remainder);
-				
-			cout << number;
-	
-			return "null";	
+
+			// remove all first '0' occurances from quotient
+			for(char& c : quotient) 
+			{
+				if ( c == '0' )
+				{
+					quotient.erase(0,1);
+				}
+				else
+				{
+					break;
+				}
+			} 	
+			
+			return remainder;
 		}		
 
 		/*
@@ -113,7 +142,7 @@ class LargeIntMul
 			}
 
 			int m = floor(n/2); 	//	m = [ n/2 ]
-			division(numb1,numb2);
+			modulus(numb1,numb2);
 
 			return numb1;
 		}
@@ -124,6 +153,6 @@ class LargeIntMul
 int main(int argc, char * argv[])
 {
        	LargeIntMul m1;
-	cout << m1.division("10000","11") << "\n";
+	cout << m1.modulus("756812","12") << "\n";
 }
 
