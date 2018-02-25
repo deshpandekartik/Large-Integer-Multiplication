@@ -26,26 +26,63 @@ class LargeIntMul
 		}
 
 
+                /*
+                ** Compare two int strings
+                ** return 1 if first is bigger
+                ** return 0 if second is bigger
+                */
+                int compare(string a, string b)
+                {
+                        if ( a.size() > b.size() )
+                        {
+                                return 1;
+                        }
+                        else if ( a.size() < b.size() )
+                        {
+                                return -1;
+                        }
+                        else
+                        {
+                                // both strings are of equal length
+                                if ( atoi(a.c_str()) < atoi(b.c_str()) )
+                                {
+                                        return -1;
+                                }
+                                else
+                                {
+                                        return 1;
+                                }
+                        }
+                }
+
+
 		/*
 		** Dividing two large int strings
 		*/
 		string division(string number, string divisor)
 		{
-			// for division to happen make number and divisior of same length
-			// if no is 8999 divisor is 99 make it 8999/0099
-			// make strings of same length
-			while ( number.size() < divisor.size() )
+			// if in case both number and divisor are equal
+			if ( number == divisor )
 			{
-				number = '0' + number;
+				return "1";
 			}
 
-			while ( divisor.size() < number.size() )
-                        {
-                                divisor = '0' + divisor;
-                        }		
+			// if divisor > number
+			if ( divisor.size() > number.size() )
+			{
+				return "0";
+			}
 
-			cout << number << "/" << divisor << "\n";
-			return "empty";
+			int number_index = divisor.size();
+
+			// if number is gt then or equal to divisor proceed with divison else add one more digit				
+			while ( compare(number.substr(0,number_index) , divisor) != 1 )
+			{
+				number_index = number_index + 1;
+			} 
+			cout << number.substr(0,number_index);
+	
+			return "null";	
 		}		
 
 		/*
@@ -81,6 +118,6 @@ class LargeIntMul
 int main(int argc, char * argv[])
 {
        	LargeIntMul m1;
-	cout << m1.prod("1231","12123123") << "\n";
+	cout << m1.division("100","11") << "\n";
 }
 
