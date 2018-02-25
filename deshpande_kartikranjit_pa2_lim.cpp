@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <ctime>
+#include <math.h>
 using namespace std;
 
 class LargeIntMul
@@ -28,7 +29,24 @@ class LargeIntMul
 		/*
 		** Dividing two large int strings
 		*/
-		
+		string division(string number, string divisor)
+		{
+			// for division to happen make number and divisior of same length
+			// if no is 8999 divisor is 99 make it 8999/0099
+			// make strings of same length
+			while ( number.size() < divisor.size() )
+			{
+				number = '0' + number;
+			}
+
+			while ( divisor.size() < number.size() )
+                        {
+                                divisor = '0' + divisor;
+                        }		
+
+			cout << number << "/" << divisor << "\n";
+			return "empty";
+		}		
 
 		/*
 		** Recursively calculate product of two large numbers
@@ -51,7 +69,8 @@ class LargeIntMul
 				return to_string(atoi(numb1.c_str()) * atoi(numb2.c_str()));
 			}
 
-			int m = floor(n/2);
+			int m = floor(n/2); 	//	m = [ n/2 ]
+			division(numb1,numb2);
 
 			return numb1;
 		}
