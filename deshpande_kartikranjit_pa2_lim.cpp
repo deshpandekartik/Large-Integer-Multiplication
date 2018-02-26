@@ -7,7 +7,7 @@ using namespace std;
 class LargeIntMul
 {
 	public:
-		int threshold = 5;	// lets say
+		int threshold = 100;	// lets say
 	     
 		struct NUMSTRUCT 
 		{
@@ -34,7 +34,7 @@ class LargeIntMul
 
 		string multiplication()
 		{
-			NUMSTRUCT numb = mul(firstnumber, secondnumber);
+			NUMSTRUCT numb = mul_rec(firstnumber, secondnumber);
                         return numb.number;
 		}
 
@@ -157,6 +157,67 @@ class LargeIntMul
 				number1.number.append("0");
 			}
 			return number1;
+		}
+
+
+		/*
+		** Multipolication of two large numbers in string format
+		*/
+		NUMSTRUCT mul(NUMSTRUCT number1, NUMSTRUCT number2)
+		{
+			NUMSTRUCT product;
+			if ( number1.number == "0" || number2.number == "0" )
+                        {
+                                // anything multiplied by 0 is 0
+                                product.number = "0";
+                                return product;
+                        }
+
+			int carry = 0;
+			string result = "";
+			string result_array[number2.number.size()];
+			int result_array_index = 0;
+			int itteration = 0;
+			for ( int i = number2.number.size() - 1; i >=0 ; i-- )
+			{
+				for ( int j = number1.number.size() - 1; j >=0 ; j-- )
+				{
+					int num1 = (int) number2.number.at(i) - '0';
+	                                int num2 = (int) (number1.number.at(j) - '0') ;
+			
+					string cary_res =  to_string((num1 * num2) + carry);
+					cout << num1 << " " << num2 << "carry " << cary_res << endl;
+					result.insert(0,cary_res.substr(cary_res.size() - 1 , cary_res.size()));
+                                	cary_res = cary_res.substr(0,cary_res.size() - 1);
+                                	carry = atoi(cary_res.c_str()) ;
+				}
+				result.insert(0,to_string(carry));
+				int count = itteration;
+                                while ( count != 0 )
+                                {
+                                        result.append("0");
+                                        count--;
+                                }
+                                itteration ++;
+
+				result.erase(0, min(result.find_first_not_of('0'), result.size()-1));
+				result_array[result_array_index] = result;
+				cout << result << endl;
+				result = "";
+				carry = 0;
+				result_array_index ++ ;
+			}
+
+			NUMSTRUCT sum_res;
+			sum_res.number = "0";
+			for ( int i = 0; i <= result_array_index - 1; i++ )
+			{
+				NUMSTRUCT temp;
+				temp.number = result_array[i];
+				sum_res = add(sum_res , temp);
+			}
+			cout << sum_res.number;
+			
 		}
 
 		/*
@@ -303,7 +364,7 @@ class LargeIntMul
 		/*
 		** Recursively calculate product of two large numbers
 		*/
-		NUMSTRUCT mul(NUMSTRUCT numb1, NUMSTRUCT numb2)	
+		NUMSTRUCT mul_rec(NUMSTRUCT numb1, NUMSTRUCT numb2)	
 		{
 			NUMSTRUCT product;
 
@@ -321,8 +382,7 @@ class LargeIntMul
 			int n = max(a,b);
 			if ( n <= threshold )
 			{
-				product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
-				return product;
+				return mul(numb1,numb2);
 			}
 
 			int m = floor(n/2); 	//	m = [ n/2 ]
@@ -332,7 +392,12 @@ class LargeIntMul
 			NUMSTRUCT z = mod(numb2,powr(m));	// 	z = numb2 rem 10^m
 
 			// ( prod(x,w) * 10^2m ) + ( prod(x,z) + prod(w,y) * 10^m) + prod(y,z)
-			product = add ( mul(mul(x,w),powr(2*m)) , add( mul( add( mul(x,z) , mul(w,y) ) , powr(m)) , mul(y,z) )) ;
+			NUMSTRUCT m1 = mul_rec(mul_rec(x,w),powr(2*m));	
+			NUMSTRUCT m2 = mul_rec( add( mul_rec(x,z) , mul_rec(w,y) ) , powr(m));
+			NUMSTRUCT m3 = add( m1 , mul_rec(y,z) );
+
+			product = add ( m1 , m3) ;
+			return product;
 		}
 	
 };
@@ -340,7 +405,7 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("123456","91");
+       	LargeIntMul m1("123456789","399");
 	cout << m1.multiplication() << "\n";
 }
 
