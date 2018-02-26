@@ -7,7 +7,7 @@ using namespace std;
 class LargeIntMul
 {
 	public:
-		int threshold = 1000;	// lets say
+		int threshold = 30;	// lets say
 	     
 		struct NUMSTRUCT 
 		{
@@ -412,7 +412,7 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("1234567892131231231231312312312312342341212412342341414124235456456213123312643","399");
+       	LargeIntMul m1("678921312312312313123123123123","399");
 	cout << m1.multiplication() << "\n";
 }
 
