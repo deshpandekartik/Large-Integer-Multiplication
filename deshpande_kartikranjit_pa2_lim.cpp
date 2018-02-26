@@ -40,8 +40,8 @@ class LargeIntMul
 
 		string addition()
 		{
-			//NUMSTRUCT numb = add(firstnumber, secondnumber);
-                        //return numb.number;
+			NUMSTRUCT numb = add(firstnumber, secondnumber);
+                        return numb.number;
 		}
 		
 		string substraction()
@@ -119,6 +119,79 @@ class LargeIntMul
                 }
 
 		/*
+		** Power of 10 raise to m
+		** Disclaimer this function only works for 10^x , number other than of 10 won't work
+		*/
+		NUMSTRUCT powr(int m)
+		{
+			NUMSTRUCT result;
+			if ( m == 0 )
+			{
+				// anything raise to 0 is 1
+				result.number = "1";
+				return result;
+			}
+
+			// append m 0's to 1
+			result.number = "1";
+			for ( int i = 0; i < m ; i++ )
+			{
+				result.number.append("0");
+			}
+
+			return result;
+		}
+			
+		/*
+		** Multiplies two numbers , the second number should be 1000... ( 1 followed by any number of zeros ) 
+		*/
+		NUMSTRUCT powmul(NUMSTRUCT number1, NUMSTRUCT number2)
+		{
+			if ( number2.number == "1" )
+			{
+				return number1;
+			}
+
+			for ( int i = 0 ; i < number2.number.size() - 2; i++)
+			{
+				number1.number.append("0");
+			}
+			return number1;
+		}
+
+		/*
+                ** Substracting two large numnbers in string format
+                */
+                NUMSTRUCT add(NUMSTRUCT number1, NUMSTRUCT number2)
+                {
+                        NUMSTRUCT result;
+			
+			while( number1.number.length() < number2.number.length() )
+                        {
+                                number1.number.insert(0,"0");
+                        }
+
+                        while( number2.number.length() < number1.number.length() )
+                        {
+                                number2.number.insert(0,"0");
+                        }
+
+                        int carry = 0;
+                        for ( int i = number1.number.size() - 1; i >=0 ; i-- )
+                        {
+                                int num1 = (int) number1.number.at(i) - '0';
+                                int num2 = (int)( number2.number.at(i) - '0' ) + carry;
+
+                            	string cary_res =  to_string(num1 + num2);
+                              	result.number.insert(0,cary_res.substr(cary_res.size() - 1 , cary_res.size()));
+				cary_res = cary_res.substr(0,cary_res.size() - 1);
+				carry = atoi(cary_res.c_str()) ;
+                        }
+	
+			return result;
+		}
+
+		/*
 		** Substracting two large numnbers in string format
 		*/
 		NUMSTRUCT sub(NUMSTRUCT number1, NUMSTRUCT number2)
@@ -146,8 +219,8 @@ class LargeIntMul
 			int carry = 0;
 			for ( int i = number1.number.size() - 1; i >=0 ; i-- )
 			{
-				int num1 = number1.number.at(i);
-				int num2 = number2.number.at(i) + carry;
+				int num1 = (int) ( number1.number.at(i) - '0' );
+				int num2 = (int) (number2.number.at(i) - '0' ) + carry;
 				if ( num1 == num2 )
 				{
 					result.number.insert(0,"0");	
@@ -238,7 +311,7 @@ class LargeIntMul
 			int a = numb1.number.size();
 			int b = numb2.number.size();
 
-			if ( a == 0 || b == 0 )
+			if ( numb1.number == "0" || numb2.number == "0" )
 			{
 				// anything multiplied by 0 is 0
 				product.number = "0";
@@ -247,17 +320,20 @@ class LargeIntMul
 
 				
 			int n = max(a,b);
-			/*
 			if ( n <= threshold )
 			{
-				return to_string(atoi(numb1.c_str()) * atoi(numb2.c_str()));
+				product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
+				return product;
 			}
-			*/
 
 			int m = floor(n/2); 	//	m = [ n/2 ]
-			div(numb1,numb2);
+			NUMSTRUCT x = div(numb1,powr(m));	//	x = numb1 divide 10^m
+			NUMSTRUCT y = mod(numb1,powr(m));	// 	y = numb1 rem 10^m
+			NUMSTRUCT w = div(numb2,powr(m));	//	w = numb2 divide 10^m
+			NUMSTRUCT z = mod(numb2,powr(m));	// 	z = numb2 rem 10^m
 
-			return numb1;
+			// ( prod(x,w) * 10^2m ) + ( prod(x,z) + prod(w,y) * 10^m) + prod(y,z)
+			product = add ( mul(mul(x,w),powr(2*m)) , add( mul( add( mul(x,z) , mul(w,y) ) , powr(m)) , mul(y,z) )) ;
 		}
 	
 };
@@ -265,7 +341,7 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("101221","31");
-	cout << m1.modulus() << "\n";
+       	LargeIntMul m1("123456","12");
+	cout << m1.multiplication() << "\n";
 }
 
