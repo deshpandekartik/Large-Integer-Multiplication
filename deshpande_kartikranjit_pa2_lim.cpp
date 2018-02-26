@@ -7,7 +7,7 @@ using namespace std;
 class LargeIntMul
 {
 	public:
-		int threshold = 100;	// lets say
+		int threshold = 1000;	// lets say
 	     
 		struct NUMSTRUCT 
 		{
@@ -76,7 +76,7 @@ class LargeIntMul
                 /*
                 ** Compare two int strings
                 ** return 1 if first is bigger
-                ** return 0 if second is bigger
+                ** return -1 if second is bigger
                 */
                	int compare(NUMSTRUCT a, NUMSTRUCT b)
                 {
@@ -84,7 +84,7 @@ class LargeIntMul
 			{
 				if ( a.sign == "-" )
 				{
-					return 0;
+					return -1;
 				}
 				else
 				{
@@ -173,6 +173,15 @@ class LargeIntMul
                                 return product;
                         }
 
+			if ( compare(number1,number2) == -1)
+                        {
+                                NUMSTRUCT temp;
+                                temp = number1;
+                                number1 = number2;
+                                number2 = temp;
+                        }
+
+
 			int carry = 0;
 			string result = "";
 			string result_array[number2.number.size()];
@@ -186,7 +195,6 @@ class LargeIntMul
 	                                int num2 = (int) (number1.number.at(j) - '0') ;
 			
 					string cary_res =  to_string((num1 * num2) + carry);
-					cout << num1 << " " << num2 << "carry " << cary_res << endl;
 					result.insert(0,cary_res.substr(cary_res.size() - 1 , cary_res.size()));
                                 	cary_res = cary_res.substr(0,cary_res.size() - 1);
                                 	carry = atoi(cary_res.c_str()) ;
@@ -202,7 +210,6 @@ class LargeIntMul
 
 				result.erase(0, min(result.find_first_not_of('0'), result.size()-1));
 				result_array[result_array_index] = result;
-				cout << result << endl;
 				result = "";
 				carry = 0;
 				result_array_index ++ ;
@@ -354,7 +361,7 @@ class LargeIntMul
 			result.number = a.number;
 			temp.number = "0";
 			
-			while(compare(sub(result,b),temp) != 0 )
+			while(compare(sub(result,b),temp) != -1 )
 			{
 				result = sub(result,b);
 			}
@@ -405,7 +412,7 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("123456789","399");
+       	LargeIntMul m1("1234567892131231231231312312312312342341212412342341414124235456456213123312643","399");
 	cout << m1.multiplication() << "\n";
 }
 
