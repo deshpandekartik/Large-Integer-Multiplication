@@ -191,10 +191,10 @@ class MatrixMultiply
                         MATRIX b22 = MATRIX(n/2,n/2);
 
 			// divide first matrix into 4 parts , a11,a22,a12,a21
-			divide_matrix(first, &a11, 0 , n/2, 0, n/2);
-			divide_matrix(first, &a12, 0 , n/2, n/2, n);
-                        divide_matrix(first, &a21, n/2 , n, 0, n/2);
-                        divide_matrix(first, &a22, n/2 , n, n/2, n);
+			divide_matrix(matrix1, &a11, 0 , n/2, 0, n/2);
+			divide_matrix(matrix1, &a12, 0 , n/2, n/2, n);
+                        divide_matrix(matrix1, &a21, n/2 , n, 0, n/2);
+                        divide_matrix(matrix1, &a22, n/2 , n, n/2, n);
 
 			/*
 			cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl ;
@@ -204,10 +204,10 @@ class MatrixMultiply
 			*/
 
                         // divide second matrix into 4 parts , b11,b22,b12,b21
-                        divide_matrix(second, &b11, 0 , n/2, 0, n/2);
-                        divide_matrix(second, &b12, 0 , n/2, n/2, n);
-                        divide_matrix(second, &b21, n/2 , n, 0, n/2);
-                        divide_matrix(second, &b22, n/2 , n, n/2, n);
+                        divide_matrix(matrix2, &b11, 0 , n/2, 0, n/2);
+                        divide_matrix(matrix2, &b12, 0 , n/2, n/2, n);
+                        divide_matrix(matrix2, &b21, n/2 , n, 0, n/2);
+                        divide_matrix(matrix2, &b22, n/2 , n, n/2, n);
 
 			/*
                         Computing all these
@@ -228,7 +228,6 @@ class MatrixMultiply
 			*/
 
 			m1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);	// m1 = (a11 + a22)(b11+b22)
-			exit(0);
 			m2 = stras_rec(add_matrices(a21,a22),b11, n/2);		// m2 = (a21 + a22) b11
 			m3 = stras_rec(a11,sub_matrices(b12,b22), n/2);		// m3 = a11 (b12 – b22)
 			m4 = stras_rec(a22,sub_matrices(b21,b11), n/2);		// m4 = a22 (b21 – b11)
