@@ -39,6 +39,11 @@ class MatrixMultiply
 			int matrix[4][4] = { { 1, 2, 3, 4} , { 1, 2, 3, 4} , {1 ,2 ,3 ,4}, {1, 2, 3, 4} };
 			int matrix1[4][4] = { { 1, 2, 3, 4} , { 1, 2, 3, 4} , {1 ,2 ,3 ,4}, {1, 2, 3, 4} };
 
+			/*
+			int matrix[2][2] = { { 4,6} , { 4,6 }  };
+                        int matrix1[2][2] = { { 4, 6 } , { 4, 6} };
+			*/
+
 			for ( int i = 0 ; i < arg; i ++)
 			{
 				for ( int j = 0 ; j < arg ; j ++)
@@ -47,6 +52,7 @@ class MatrixMultiply
 					second.matrix[i][j] = matrix1[i][j];
 				}
 			}
+
 		}
 	
 		/*
@@ -148,11 +154,28 @@ class MatrixMultiply
                 */
                 MATRIX stras_rec(MATRIX matrix1 , MATRIX matrix2 ,int n)
                 {
+			/*
+			cout << "----------------------------------" << endl;
+			display_matrix(matrix1);
+			display_matrix(matrix2);
+			cout << "----------------------------------" << endl;
+			*/
+
 			MATRIX result = MATRIX(matrix1.row, matrix1.row);
 			n = matrix1.row;
 			if ( n == 1 )
 			{
-				result.matrix[0][0] = matrix1.matrix[0][0] * matrix2.matrix[0][0];
+				// base case
+				for ( int i = 0 ; i < n; i ++ )
+				{
+					for ( int j = 0; j <n; j++ )
+					{
+						for ( int k = 0; k <n; k++)
+						{
+							result.matrix[i][j] = matrix1.matrix[i][k] * matrix2.matrix[k][j];
+						}
+					}
+				}
 				return result;
 			}
 
@@ -173,6 +196,13 @@ class MatrixMultiply
                         divide_matrix(first, &a21, n/2 , n, 0, n/2);
                         divide_matrix(first, &a22, n/2 , n, n/2, n);
 
+			/*
+			cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl ;
+			display_matrix(a11);
+			display_matrix(a22);
+			cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << endl ;
+			*/
+
                         // divide second matrix into 4 parts , b11,b22,b12,b21
                         divide_matrix(second, &b11, 0 , n/2, 0, n/2);
                         divide_matrix(second, &b12, 0 , n/2, n/2, n);
@@ -191,7 +221,14 @@ class MatrixMultiply
                         */
 
 			MATRIX m1 = MATRIX(n/2,n/2) , m2 = MATRIX(n/2,n/2), m3 = MATRIX(n/2,n/2), m4 = MATRIX(n/2,n/2) , m5 = MATRIX(n/2,n/2), m6 = MATRIX(n/2,n/2), m7 = MATRIX(n/2,n/2); 
+			/*
+			cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+                        display_matrix(add_matrices(a11,a22));
+                        cout << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+			*/
+
 			m1 = stras_rec(add_matrices(a11,a22),add_matrices(b11,b22), n/2);	// m1 = (a11 + a22)(b11+b22)
+			exit(0);
 			m2 = stras_rec(add_matrices(a21,a22),b11, n/2);		// m2 = (a21 + a22) b11
 			m3 = stras_rec(a11,sub_matrices(b12,b22), n/2);		// m3 = a11 (b12 – b22)
 			m4 = stras_rec(a22,sub_matrices(b21,b11), n/2);		// m4 = a22 (b21 – b11)
@@ -246,6 +283,7 @@ class MatrixMultiply
                 {
                         int smalli = 0;
                         int smallj = 0;
+			
                         for ( int i = row_start ; i < row_end ; i++  )
                         {
                                 for ( int j = col_start; j < col_end; j++ )
@@ -266,7 +304,7 @@ class MatrixMultiply
 			MATRIX result_mat = MATRIX(mat1.row , mat1.row);
                         for ( int i = 0; i < mat1.row; i++ )
                         {
-                                for ( int j = 0 ; j < mat2.col; j++ )
+                                for ( int j = 0 ; j < mat1.row; j++ )
                                 {
                                         result_mat.matrix[i][j] =  mat1.matrix[i][j] + mat2.matrix[i][j];
                                 }
