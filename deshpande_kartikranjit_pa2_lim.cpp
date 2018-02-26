@@ -318,7 +318,6 @@ class LargeIntMul
 				return product;
 			}
 
-				
 			int n = max(a,b);
 			if ( n <= threshold )
 			{
@@ -341,7 +340,7 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("123456","12");
+       	LargeIntMul m1("123456","91");
 	cout << m1.multiplication() << "\n";
 }
 
