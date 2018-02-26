@@ -74,7 +74,6 @@ class LargeIntMul
                                 number2.insert(0,"0");
                         }
 
-			cout << number1 << " " << number2 << endl;	
 			string result, sub_res ;
 			int carry = 0;
 			for ( int i = number1.size() - 1; i >=0 ; i-- )
@@ -98,11 +97,11 @@ class LargeIntMul
 					cary_res = cary_res.substr(0,cary_res.size() - 1);
 					carry = atoi(cary_res.c_str()) ;
 					carry = carry + 1;
-					 cout << carry << "asda \n";
 				}
 			}
-			cout << result;
-			return "";
+			// remove leading zeros
+			result.erase(0, min(result.find_first_not_of('0'), result.size()-1));
+			return result;
 		}
 
 		/*
@@ -122,16 +121,16 @@ class LargeIntMul
                                 return "0";
                         }
 
-			string quotient ;
-			/*
+			string quotient = "0";
 			while ( compare(number , divisor) == 1 )
 			{
-				//number = number - divisor
-				// quotient ++;	
+				number = sub(number, divisor);
+				int quo = atoi(quotient.c_str());
+				quo = quo + 1;
+				quotient = to_string(quo);
 			}
-			*/
-			cout << sub(number, divisor);
-			return "";
+
+			return quotient;
 		}
 
 
@@ -175,6 +174,6 @@ class LargeIntMul
 int main(int argc, char * argv[])
 {
        	LargeIntMul m1;
-	cout << m1.div("213234114","1231234") << "\n";
+	cout << m1.div("25478962145544","546105749") << "\n";
 }
 
