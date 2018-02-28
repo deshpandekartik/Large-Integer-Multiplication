@@ -410,21 +410,15 @@ class LargeIntMul
 		NUMSTRUCT mul_rec(NUMSTRUCT numb1, NUMSTRUCT numb2)	
 		{
 			NUMSTRUCT product;
+			numb1.number.erase(0, min(numb1.number.find_first_not_of('0'), numb1.number.size()-1));
+			numb2.number.erase(0, min(numb2.number.find_first_not_of('0'), numb2.number.size()-1));
 
-			/*
-			if ( compare(numb1,numb2) == -1)
-                        {
-                                NUMSTRUCT temp;
-                                temp = numb1;
-                                numb1 = numb2;
-                                numb2 = temp;
-                        }
-			*/
+			// remove zeroes from left , if present
 
 
 			// No of digits in numb1 and numb2
-			int a = numb1.number.size();
-			int b = numb2.number.size();
+			int asize = numb1.number.size();
+			int bsize = numb2.number.size();
 
 			if ( numb1.number == "0" || numb2.number == "0" || numb1.number.size() == 0 || numb2.number.size() == 0)
 			{
@@ -433,49 +427,63 @@ class LargeIntMul
 				return product;
 			}
 
-			int n = max(a,b);
-			if ( n <= 5 )
+			int n = max(asize,bsize);
+			if ( asize = 1 || bsize == 1)
 			{
-				product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
-				return product;
+				//product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
+				return mul(numb1,numb2);
 			}
-
 			itteration ++ ;
-			cout << "---------------------" << endl;
-                        cout << numb1.number << " " << numb2.number << " " << itteration << endl;
-                        cout << "---------------------" << endl;
+
+			while( numb1.number.length() < numb2.number.length() )
+                        {
+                                numb1.number.insert(0,"0");
+                        }
+
+                        while( numb2.number.length() < numb1.number.length() )
+                        {
+                                numb2.number.insert(0,"0");
+                        }
+
 
 			int m = floor(n/2); 	//	m = [ n/2 ]
-			NUMSTRUCT x = div(numb1,powr(m));	//	x = numb1 divide 10^m
-			NUMSTRUCT y = mod(numb1,powr(m));	// 	y = numb1 rem 10^m
-			NUMSTRUCT w = div(numb2,powr(m));	//	w = numb2 divide 10^m
-			NUMSTRUCT z = mod(numb2,powr(m));	// 	z = numb2 rem 10^m
 
-			/*
-			if ( itteration >= 20 )
-			{
-				cout << "here "<<  numb1.number << " * " << numb2.number << endl;
-				cout << "res " << mul_rec(x,w).number << " * " << powr(2*m).number << " " << mul_rec(mul_rec(x,w),powr(2*m)).number << endl;
-                        	exit(0);
-			}
-			*/			
+			NUMSTRUCT x = moddiv(numb1,0,m);       //      x = numb1 divide 10^m
+                        NUMSTRUCT y = moddiv(numb1,m,numb1.number.size());       //      y = numb1 rem 10^m
+                        NUMSTRUCT w = moddiv(numb2,0,m);       //      w = numb2 divide 10^m
+                        NUMSTRUCT z = moddiv(numb2,m,numb2.number.size());       //      z = numb2 rem 10^m
 
-			// ( prod(x,w) * 10^2m ) + ( prod(x,z) + prod(w,y) * 10^m) + prod(y,z)
-			NUMSTRUCT m1 = mul_rec(mul_rec(x,w),powr(2*m));
-			NUMSTRUCT m2 = mul_rec( add( mul_rec(x,z) , mul_rec(w,y) ) , powr(m));
-			NUMSTRUCT m3 = add( m1 , mul_rec(y,z) );
 
-			product = add ( m1 , m3) ;
-			product = add ( product, m2);
+			NUMSTRUCT xw = mul_rec(x,w);
+			NUMSTRUCT yz = mul_rec(y,z);
+
+			NUMSTRUCT addxy = add(x,y);
+			NUMSTRUCT addwz = add(w,z);
+
+			NUMSTRUCT xywz = mul_rec(addxy,addwz);
+
+			xw.number = string( m*2, '0').append(xw.number);
+                        xywz.number = string( m, '0').append(xywz.number);
+
+			product = add ( xw , xywz) ;
+			product = add ( product, yz);
+			product.number.erase(0, min(product.number.find_first_not_of('0'), product.number.size()-1));			
 			return product;
 		}
-	
+
+		NUMSTRUCT moddiv( NUMSTRUCT num , int start , int end )
+		{
+			NUMSTRUCT result;
+			result.number = num.number.substr(start,end);
+			result.number.erase(0, min(result.number.find_first_not_of('0'), result.number.size()-1));
+			return result;
+		}	
 };
 
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("100000000","10000");
+       	LargeIntMul m1("123452141241234124124124124","1241241412141241241241241");
 	cout << m1.multiplication() << endl;
 
 	cout << "verify " << m1.multiplication_verify() << endl;
