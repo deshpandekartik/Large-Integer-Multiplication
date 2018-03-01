@@ -2,6 +2,7 @@
 #include <string>
 #include <ctime>
 #include <math.h>
+#include <sstream>
 using namespace std;
 
 class LargeIntMul
@@ -68,7 +69,6 @@ class LargeIntMul
                         NUMSTRUCT numb = mod(firstnumber, secondnumber);
                         return numb.number;
                 }
-
 
                 /*
                 ** Computes max of 2 numbers
@@ -465,13 +465,13 @@ class LargeIntMul
                         NUMSTRUCT z = moddiv(numb2,m,numb2.number.size());       //      z = numb2 rem 10^m
 
 
-			NUMSTRUCT xw = mul_rec(x,w);
-			NUMSTRUCT yz = mul_rec(y,z);
+			NUMSTRUCT xw = mul_rec(x,w);	// Time Complexity 1st recursive call T(n/2)
+			NUMSTRUCT yz = mul_rec(y,z);	// Time Complexity 2bd recursive call 2(T(n/2))
 
 			NUMSTRUCT addxy = add(x,y);
 			NUMSTRUCT addwz = add(w,z);
 
-			NUMSTRUCT xywz = mul_rec(addxy,addwz);
+			NUMSTRUCT xywz = mul_rec(addxy,addwz);	// Time complexity 3rd recursive call 3T(n/3)
 
 			xw.number = string( m*2, '0').append(xw.number);
                         xywz.number = string( m, '0').append(xywz.number);
@@ -507,18 +507,11 @@ class LargeIntMul
                         }
 
                         int n = max(asize,bsize);
-                        if ( asize <= 2 || bsize <= 2 )
+                        if ( asize <= 3 || bsize <= 3 )
                         {
                                 //product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
                                 return mul(numb1,numb2);
                         }
-
-			/*
-			cout << "---------------------" << endl;
-			cout << numb1.number << endl;
-			cout << numb2.number << endl;
-			cout << "---------------------" << endl;
-			*/
 
                         while( numb1.number.length() < numb2.number.length() )
                         {
@@ -540,6 +533,10 @@ class LargeIntMul
 				numb2.number.insert(0,"0");
 			}
 
+			asize = numb1.number.size();
+			bsize = numb2.number.size();
+			n = max(asize,bsize);
+
                         int m = floor(n/3);     //      m = [ n/2 ]
 
                         NUMSTRUCT x2 = moddiv(numb1,0,m);      
@@ -549,7 +546,7 @@ class LargeIntMul
 			NUMSTRUCT y2 = moddiv(numb2,0,m);      
                         NUMSTRUCT y1 = moddiv(numb2,m,m);
                         NUMSTRUCT y0 = moddiv(numb2,(2*m),numb2.number.size());   
-			
+		
 			x2.number.erase(0, min(x2.number.find_first_not_of('0'), x2.number.size()-1));
 			x1.number.erase(0, min(x1.number.find_first_not_of('0'), x1.number.size()-1));
 			x0.number.erase(0, min(x0.number.find_first_not_of('0'), x0.number.size()-1));
@@ -558,13 +555,19 @@ class LargeIntMul
                         y1.number.erase(0, min(y1.number.find_first_not_of('0'), y1.number.size()-1));
                         y0.number.erase(0, min(y0.number.find_first_not_of('0'), y0.number.size()-1));
 	
+
+			// Time Complexity 1st recursive call T(n/3)
 			NUMSTRUCT term1 = padzeros(modified_mul_rec(x2,y2),(m*4))  ;		// (x2*y2) * 10 ^ 4m
 	
+			// Time Complexity 2 recursive calls 3T(n/3)
 			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
 
+			// Time Complexity 3 recursive calls 6T(n/3)
 			NUMSTRUCT term3 = padzeros(add(add(modified_mul_rec(x2,y0),modified_mul_rec(x1,y1)),modified_mul_rec(y2,x0)),2*m);	// ( x2y0 + x1y1 + y2x0 ) * 10 ^ 2m
+			// Time Complexity 2 recursive calls 8T(n/3)
 			NUMSTRUCT term4 = padzeros(add(modified_mul_rec(x1,y0),modified_mul_rec(y1,x0)),m);
 
+			// Time Complexity 1 recursive call 9T(n/2)
 			NUMSTRUCT term5 = modified_mul_rec(x0,y0);
 
 
@@ -593,13 +596,62 @@ class LargeIntMul
 		}	
 };
 
+/*
+** Randomly generate large integers	
+*/
+string random_numbers(int n)
+{
+	int k = 6 * n;
+	string randnumber ;
+	for ( int i = 0 ; i < k ; i++ )
+	{
+		randnumber.insert(0,to_string(1 + rand() % 9));
+	}
+	return randnumber;
+}
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("1234","1234");
-	cout << m1.multiplication() << endl;
+	/*
+	LargeIntMul m1("1234567","1234567");
+        cout  << m1.mod_multiplication() << endl;
+	cout  << m1.multiplication_verify() << endl;
+	exit(0);
+	*/
 
-	cout << m1.mod_multiplication() << endl ;
-	cout << m1.multiplication_verify() << endl;
+	int n;
+	if ( argc!= 2)
+	{
+		cout << "Please enter a value as a command line argument"; 
+		exit(0);
+	}
+	
+	istringstream input(argv[1]);
+	if(!(input >> n && input.eof()))
+	{
+		cout<<"\nPlease enter the argument for n correctly. Enter an integer.\n \n";
+		exit(0);	
+	}
+	else
+	{
+		n = atoi(argv[1]);
+		if(n<0)
+		{
+			cout<<"\nPlease enter the argument for n correctly. Enter a positive integer.\n \n";
+			exit(0);
+		}
+	}
+
+	string random1 = random_numbers(n);
+	string random2 = random_numbers(n);
+	
+	cout << "Random number 1 ( size : " << random1.size()  << " ) : " << random1 << endl;
+	cout << "Random number 2 ( size : " << random2.size()  << " ) : " << random2 << endl;
+
+       	LargeIntMul m1(random1,random2);
+	cout << "Large Integer Multiplication algorithm : " << m1.multiplication() << endl;
+
+	cout << "Modified large Integer muliplication   : " << m1.mod_multiplication() << endl ;
+	cout << "Third grade multiplication algorithm   : " << m1.multiplication_verify() << endl;
 }
 
