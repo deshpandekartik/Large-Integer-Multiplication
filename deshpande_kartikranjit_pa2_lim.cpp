@@ -269,7 +269,11 @@ class LargeIntMul
 				cary_res = cary_res.substr(0,cary_res.size() - 1);
 				carry = atoi(cary_res.c_str()) ;
                         }
-	
+
+			if ( carry != 0 )
+			{
+				result.number.insert(0,to_string(carry));		
+			}	
 			return result;
 		}
 
@@ -508,7 +512,6 @@ class LargeIntMul
                                 //product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
                                 return mul(numb1,numb2);
                         }
-                        itteration ++ ;
 
                         while( numb1.number.length() < numb2.number.length() )
                         {
@@ -524,22 +527,26 @@ class LargeIntMul
                         int m = floor(n/3);     //      m = [ n/2 ]
 
                         NUMSTRUCT x2 = moddiv(numb1,0,m);       //      x = numb1 divide 10^m
-			NUMSTRUCT x1 = moddiv(numb1,m,2*m);
+			NUMSTRUCT x1 = moddiv(numb1,m,m);
                         NUMSTRUCT x0 = moddiv(numb1,(2*m),numb1.number.size());       //      y = numb1 rem 10^m
 
 			NUMSTRUCT y2 = moddiv(numb2,0,m);       //      x = numb1 divide 10^m
-                        NUMSTRUCT y1 = moddiv(numb2,m,2*m);
+                        NUMSTRUCT y1 = moddiv(numb2,m,m);
                         NUMSTRUCT y0 = moddiv(numb2,(2*m),numb2.number.size());       //      y = numb1 rem 10^m
-
-
+			
 			NUMSTRUCT term1 = padzeros(modified_mul_rec(x2,y2),(m*4))  ;		// (x2*y2) * 10 ^ 4m
-			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
-			
 	
-			cout << "mod rec " << modified_mul_rec(x2,y1).number << " " << numb2.number.substr(m,2*m) << "a" << endl;
-			
+			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
 
-			return numb2;
+			NUMSTRUCT term3 = padzeros(add(add(modified_mul_rec(x2,y0),modified_mul_rec(x1,y1)),modified_mul_rec(y2,x0)),2*m);	// ( x2y0 + x1y1 + y2x0 ) * 10 ^ 2m
+			NUMSTRUCT term4 = padzeros(add(modified_mul_rec(x1,y0),modified_mul_rec(y1,x0)),m);
+			NUMSTRUCT term5 = modified_mul_rec(x0,y0);
+
+			cout << "as " << term5.number << " " << m << endl;
+
+			product = add(add(add(add(term1,term2),term3),term4),term5);
+			
+			return product;
 		}
 
 		NUMSTRUCT padzeros(NUMSTRUCT numb , int count)
@@ -547,8 +554,8 @@ class LargeIntMul
 			int counter = 0;
 			while( counter != count )
 			{
-				numb.number = numb.number.insert(numb.number.size(), "0");
 				counter++;
+				numb.number = numb.number.insert(numb.number.size(), "0");
 			}
 			return numb;	
 		}
@@ -565,8 +572,8 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("111","111");
-	//cout << m1.multiplication() << endl;
+       	LargeIntMul m1("123456789","123456789");
+	cout << m1.multiplication() << endl;
 
 	cout << m1.mod_multiplication() << endl ;
 	cout << "verify " << m1.multiplication_verify() << endl;
