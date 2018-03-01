@@ -38,6 +38,13 @@ class LargeIntMul
                         return numb.number;
 		}
 
+		string mod_multiplication()
+                {
+                        NUMSTRUCT numb = modified_mul_rec(firstnumber, secondnumber);
+                        return numb.number;
+                }
+
+
 		string multiplication_verify()
                 {
                         NUMSTRUCT numb = mul(firstnumber, secondnumber);
@@ -471,6 +478,81 @@ class LargeIntMul
 			return product;
 		}
 
+		/*
+		** Modified version of large interger multiplication
+		** Dividing no into 3 parts
+		*/
+		NUMSTRUCT modified_mul_rec(NUMSTRUCT numb1, NUMSTRUCT numb2)
+		{
+			NUMSTRUCT product;
+                        numb1.number.erase(0, min(numb1.number.find_first_not_of('0'), numb1.number.size()-1));
+                        numb2.number.erase(0, min(numb2.number.find_first_not_of('0'), numb2.number.size()-1));
+
+                        // remove zeroes from left , if present
+
+
+                        // No of digits in numb1 and numb2
+                        int asize = numb1.number.size();
+                        int bsize = numb2.number.size();
+
+                        if ( numb1.number == "0" || numb2.number == "0" || numb1.number.size() == 0 || numb2.number.size() == 0)
+                        {
+                                // anything multiplied by 0 is 0
+                                product.number = "0";
+                                return product;
+                        }
+
+                        int n = max(asize,bsize);
+                        if ( asize <= 2 || bsize <= 2 )
+                        {
+                                //product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
+                                return mul(numb1,numb2);
+                        }
+                        itteration ++ ;
+
+                        while( numb1.number.length() < numb2.number.length() )
+                        {
+                                numb1.number.insert(0,"0");
+                        }
+
+                        while( numb2.number.length() < numb1.number.length() )
+                        {
+                                numb2.number.insert(0,"0");
+                        }
+
+
+                        int m = floor(n/3);     //      m = [ n/2 ]
+
+                        NUMSTRUCT x2 = moddiv(numb1,0,m);       //      x = numb1 divide 10^m
+			NUMSTRUCT x1 = moddiv(numb1,m,2*m);
+                        NUMSTRUCT x0 = moddiv(numb1,(2*m),numb1.number.size());       //      y = numb1 rem 10^m
+
+			NUMSTRUCT y2 = moddiv(numb2,0,m);       //      x = numb1 divide 10^m
+                        NUMSTRUCT y1 = moddiv(numb2,m,2*m);
+                        NUMSTRUCT y0 = moddiv(numb2,(2*m),numb2.number.size());       //      y = numb1 rem 10^m
+
+
+			NUMSTRUCT term1 = padzeros(modified_mul_rec(x2,y2),(m*4))  ;		// (x2*y2) * 10 ^ 4m
+			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
+			
+	
+			cout << "mod rec " << modified_mul_rec(x2,y1).number << " " << numb2.number.substr(m,2*m) << "a" << endl;
+			
+
+			return numb2;
+		}
+
+		NUMSTRUCT padzeros(NUMSTRUCT numb , int count)
+		{
+			int counter = 0;
+			while( counter != count )
+			{
+				numb.number = numb.number.insert(numb.number.size(), "0");
+				counter++;
+			}
+			return numb;	
+		}
+
 		NUMSTRUCT moddiv( NUMSTRUCT num , int start , int end )
 		{
 			NUMSTRUCT result;
@@ -483,9 +565,10 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("123452141241234124124124124","1241241412141241241241241");
-	cout << m1.multiplication() << endl;
+       	LargeIntMul m1("111","111");
+	//cout << m1.multiplication() << endl;
 
+	cout << m1.mod_multiplication() << endl ;
 	cout << "verify " << m1.multiplication_verify() << endl;
 }
 
