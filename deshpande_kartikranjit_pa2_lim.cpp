@@ -513,6 +513,13 @@ class LargeIntMul
                                 return mul(numb1,numb2);
                         }
 
+			/*
+			cout << "---------------------" << endl;
+			cout << numb1.number << endl;
+			cout << numb2.number << endl;
+			cout << "---------------------" << endl;
+			*/
+
                         while( numb1.number.length() < numb2.number.length() )
                         {
                                 numb1.number.insert(0,"0");
@@ -523,29 +530,46 @@ class LargeIntMul
                                 numb2.number.insert(0,"0");
                         }
 
+			while ( numb1.number.length() % 3 != 0 )
+                        {
+                                numb1.number.insert(0,"0");
+                        }
+
+			while ( numb2.number.length() % 3 != 0 )
+			{
+				numb2.number.insert(0,"0");
+			}
 
                         int m = floor(n/3);     //      m = [ n/2 ]
 
-                        NUMSTRUCT x2 = moddiv(numb1,0,m);       //      x = numb1 divide 10^m
+                        NUMSTRUCT x2 = moddiv(numb1,0,m);      
 			NUMSTRUCT x1 = moddiv(numb1,m,m);
-                        NUMSTRUCT x0 = moddiv(numb1,(2*m),numb1.number.size());       //      y = numb1 rem 10^m
+                        NUMSTRUCT x0 = moddiv(numb1,(2*m),numb1.number.size());    
 
-			NUMSTRUCT y2 = moddiv(numb2,0,m);       //      x = numb1 divide 10^m
+			NUMSTRUCT y2 = moddiv(numb2,0,m);      
                         NUMSTRUCT y1 = moddiv(numb2,m,m);
-                        NUMSTRUCT y0 = moddiv(numb2,(2*m),numb2.number.size());       //      y = numb1 rem 10^m
+                        NUMSTRUCT y0 = moddiv(numb2,(2*m),numb2.number.size());   
 			
+			x2.number.erase(0, min(x2.number.find_first_not_of('0'), x2.number.size()-1));
+			x1.number.erase(0, min(x1.number.find_first_not_of('0'), x1.number.size()-1));
+			x0.number.erase(0, min(x0.number.find_first_not_of('0'), x0.number.size()-1));
+
+			y2.number.erase(0, min(y2.number.find_first_not_of('0'), y2.number.size()-1));
+                        y1.number.erase(0, min(y1.number.find_first_not_of('0'), y1.number.size()-1));
+                        y0.number.erase(0, min(y0.number.find_first_not_of('0'), y0.number.size()-1));
+	
 			NUMSTRUCT term1 = padzeros(modified_mul_rec(x2,y2),(m*4))  ;		// (x2*y2) * 10 ^ 4m
 	
 			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
 
 			NUMSTRUCT term3 = padzeros(add(add(modified_mul_rec(x2,y0),modified_mul_rec(x1,y1)),modified_mul_rec(y2,x0)),2*m);	// ( x2y0 + x1y1 + y2x0 ) * 10 ^ 2m
 			NUMSTRUCT term4 = padzeros(add(modified_mul_rec(x1,y0),modified_mul_rec(y1,x0)),m);
+
 			NUMSTRUCT term5 = modified_mul_rec(x0,y0);
 
-			cout << "as " << term5.number << " " << m << endl;
 
 			product = add(add(add(add(term1,term2),term3),term4),term5);
-			
+			product.number.erase(0, min(product.number.find_first_not_of('0'), product.number.size()-1));	
 			return product;
 		}
 
@@ -572,10 +596,10 @@ class LargeIntMul
 
 int main(int argc, char * argv[])
 {
-       	LargeIntMul m1("123456789","123456789");
+       	LargeIntMul m1("1234","1234");
 	cout << m1.multiplication() << endl;
 
 	cout << m1.mod_multiplication() << endl ;
-	cout << "verify " << m1.multiplication_verify() << endl;
+	cout << m1.multiplication_verify() << endl;
 }
 
