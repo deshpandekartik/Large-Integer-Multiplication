@@ -444,18 +444,6 @@ class LargeIntMul
 				//product.number = to_string(atoi(numb1.number.c_str()) * atoi(numb2.number.c_str()));
 				return mul(numb1,numb2);
 			}
-			itteration ++ ;
-
-			while( numb1.number.length() < numb2.number.length() )
-                        {
-                                numb1.number.insert(0,"0");
-                        }
-
-                        while( numb2.number.length() < numb1.number.length() )
-                        {
-                                numb2.number.insert(0,"0");
-                        }
-
 
 			int m = floor(n/2); 	//	m = [ n/2 ]
 
@@ -601,9 +589,8 @@ class LargeIntMul
 */
 string random_numbers(int n)
 {
-	int k = 6 * n;
 	string randnumber ;
-	for ( int i = 0 ; i < k ; i++ )
+	for ( int i = 0 ; i < n ; i++ )
 	{
 		randnumber.insert(0,to_string(1 + rand() % 9));
 	}
@@ -629,15 +616,15 @@ int main(int argc, char * argv[])
 	istringstream input(argv[1]);
 	if(!(input >> n && input.eof()))
 	{
-		cout<<"\nPlease enter the argument for n correctly. Enter an integer.\n \n";
+		cout<<"\nPlease enter the argument for n correctly. Enter an integer multiple of 6.\n \n";
 		exit(0);	
 	}
 	else
 	{
 		n = atoi(argv[1]);
-		if(n<0)
+		if(n <= 0 || n % 6 != 0 )
 		{
-			cout<<"\nPlease enter the argument for n correctly. Enter a positive integer.\n \n";
+			cout<<"\nPlease enter the argument for n correctly. Enter a positive integer, a multiple of 6.\n \n";
 			exit(0);
 		}
 	}
