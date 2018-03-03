@@ -30,13 +30,20 @@ class SimulationAlgos
 		/*
 		** Generate an array of size N ( specified by user ), using random numbers
 		*/
-		void generate_random_array()
+		void generate_random_array(string choice)
 		{
 			int max_random_no_limit; // create random no from 0 to max_random_no_limit variable value 
 
 			if ( N > 20 )
 			{
-				max_random_no_limit = 100;
+				if ( choice != "2" )
+				{
+					max_random_no_limit = 10000;
+				}
+				else
+				{
+					max_random_no_limit = 999;
+				}
 			}
 			else
 			{
@@ -136,6 +143,7 @@ class SimulationAlgos
                 */
                 void heapsort()
                 {
+			/*
 			// Custom test cases
 			random_input_array[0] = 12;
 			random_input_array[1] = 11;
@@ -143,6 +151,7 @@ class SimulationAlgos
 			random_input_array[3] = 5;
 			random_input_array[4] = 6;
 			random_input_array[5] = 7;
+			*/
 			//max_heapify(1);
 			buid_max_heap(N);
                 }
@@ -182,20 +191,108 @@ class SimulationAlgos
 				max_heapify(i,n);
 			}
 
+			// call function to display max heap
+                      	std::string comment = "Max heap ";
+                    	
+			if ( gui_status == true )
+                     	{
+                          	print_gui_input_array(random_input_array, comment,N);
+                     	}
+
+
+			int itteration = 1;
 			for ( int i = n - 1; i >= 0; i-- )
 			{
 				swap_in_array(0,i);
 				max_heapify(0,i);
-				print_sorted_array(random_input_array, "IT ", N );
+
+				// after each itteration call gui function to display
+                             	comment = "Itteration " + std::to_string(itteration);
+
+                                if ( gui_status == true )
+                                {
+                                        print_gui_input_array(random_input_array, comment,N);
+                                }
+				itteration ++;
 			}
 		}
+
+
 
 		/*
 		** Radix sort
 		*/
 		void radixsort()
 		{
+			/*
+			Custom test cases
+			random_input_array[0] = 12;
+                        random_input_array[1] = 11;
+                        random_input_array[2] = 13;
+                        random_input_array[3] = 5;
+                        random_input_array[4] = 6;
+                        random_input_array[5] = 7;
+			*/
 
+			// find max no in array
+			int maximum = random_input_array[0];
+			for ( int i = 1 ; i < N ; i ++ )
+			{
+				if (random_input_array[i] > maximum )
+				{
+					maximum = random_input_array[i];
+				}
+			}
+		
+			int my_bucket[10][10], semi_buck[10] ;	
+			int digit_length = 0;
+
+			// Get length of a number
+			while(maximum > 0)
+			{
+				digit_length ++ ;
+				maximum = maximum / 10;
+			}	
+
+			int getmsd = 1;
+			for( int pass = 0; pass < digit_length; pass++)
+			{
+				// initialize to 0 , counting sort ( 0, 9 )
+				// used to maintain count of each digit at a bit position
+				for( int i = 0; i < 10; i++)
+				{
+					semi_buck[i] = 0;
+				}
+
+				// Maintain count of all numnbers based on a bit int in semibucket array	
+				for( int i = 0; i < N; i++)
+				{
+					int digit = ( random_input_array[i] / getmsd ) % 10;
+					my_bucket[digit][semi_buck[digit]] = random_input_array[i];
+					semi_buck[digit]++;
+				}
+
+				int index = 0;
+				for(int k = 0; k < 10; k++)
+				{
+					for(int j = 0; j < semi_buck[k]; j++)
+					{
+						random_input_array[index] = my_bucket[k][j];
+						index = index + 1;
+					}
+				}
+				// for next pass
+				getmsd = getmsd * 10;
+	
+				// after each pass call gui function to display
+                                std::string comment = "Itteration " + std::to_string(pass + 1);
+
+                                if ( gui_status == true )
+                                {
+                                        print_gui_input_array(random_input_array, comment,N);
+                                }
+	
+			}
 		}
 };
 
@@ -204,9 +301,8 @@ class SimulationAlgos
 */
 void simulate_algo ( std::string choice , int N_size)
 {
-	//SimulationAlgos S(N_size);	
-	SimulationAlgos S(6);
-	//S.generate_random_array();
+	SimulationAlgos S(N_size);	
+	S.generate_random_array(choice);
 
         if ( choice == "1" )
         {
