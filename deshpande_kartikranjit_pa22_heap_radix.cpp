@@ -226,11 +226,11 @@ class SimulationAlgos
 		{
 			/*
 			Custom test cases
-			random_input_array[0] = 12;
-                        random_input_array[1] = 11;
-                        random_input_array[2] = 13;
-                        random_input_array[3] = 5;
-                        random_input_array[4] = 6;
+			random_input_array[0] = 311;
+                        random_input_array[1] = 1;
+                        random_input_array[2] = 133;
+                        random_input_array[3] = 50;
+                        random_input_array[4] = 60;
                         random_input_array[5] = 7;
 			*/
 
@@ -244,11 +244,11 @@ class SimulationAlgos
 				}
 			}
 		
-			int my_bucket[10][10], semi_buck[10] ;	
+			int my_bucket[10][10], C[10] ;	
 			int digit_length = 0;
 
-			// Get length of a number
-			while(maximum > 0)
+			// Get length of a maximum number
+			while( maximum > 0 )
 			{
 				digit_length ++ ;
 				maximum = maximum / 10;
@@ -257,25 +257,25 @@ class SimulationAlgos
 			int getmsd = 1;
 			for( int pass = 0; pass < digit_length; pass++)
 			{
-				// initialize to 0 , counting sort ( 0, 9 )
+				int C[10];	// 10 because 0 to 9 digits only
 				// used to maintain count of each digit at a bit position
 				for( int i = 0; i < 10; i++)
 				{
-					semi_buck[i] = 0;
+					C[i] = 0;
 				}
 
 				// Maintain count of all numnbers based on a bit int in semibucket array	
 				for( int i = 0; i < N; i++)
 				{
-					int digit = ( random_input_array[i] / getmsd ) % 10;
-					my_bucket[digit][semi_buck[digit]] = random_input_array[i];
-					semi_buck[digit]++;
+					int offset = ( random_input_array[i] / getmsd ) % 10;
+					my_bucket[offset][C[offset]] = random_input_array[i];
+					C[offset]++;
 				}
 
 				int index = 0;
 				for(int k = 0; k < 10; k++)
 				{
-					for(int j = 0; j < semi_buck[k]; j++)
+					for(int j = 0; j < C[k]; j++)
 					{
 						random_input_array[index] = my_bucket[k][j];
 						index = index + 1;
@@ -283,6 +283,11 @@ class SimulationAlgos
 				}
 				// for next pass
 				getmsd = getmsd * 10;
+
+				for( int i = 0; i < 10; i++)
+                                {
+                                        C[i] = 0;
+                                }
 	
 				// after each pass call gui function to display
                                 std::string comment = "Itteration " + std::to_string(pass + 1);
