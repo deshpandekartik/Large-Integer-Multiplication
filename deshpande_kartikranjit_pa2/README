@@ -1,0 +1,11 @@
+BuID - kdeshpa3
+BNo - B00692326
+
+# Compiling the code
+
+- make clean
+- make all
+- ./multiplication.out n ( Large integer multiplication , where n is 6k)
+- ./strassen.out n ( Strassens multiplication, where n = 2^k )
+
+The code has been tested on remote machines.

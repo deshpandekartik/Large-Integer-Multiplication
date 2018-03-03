@@ -1,0 +1,10 @@
+BuID - kdeshpa3
+BNo - B00692326
+
+# Compiling the code
+
+- make clean
+- make all
+- ./heap_radix.out
+
+The code has been tested on remote machines.
