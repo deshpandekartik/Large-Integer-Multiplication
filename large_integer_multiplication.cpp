@@ -453,7 +453,7 @@ class LargeIntMul
 
 
 			NUMSTRUCT xw = mul_rec(x,w);	// Time Complexity 1st recursive call T(n/2)
-			NUMSTRUCT yz = mul_rec(y,z);	// Time Complexity 2bd recursive call 2(T(n/2))
+			NUMSTRUCT yz = mul_rec(y,z);	// Time Complexity 2nd recursive call 2(T(n/2))
 
 			NUMSTRUCT addxy = add(x,y);
 			NUMSTRUCT addwz = add(w,z);
@@ -547,15 +547,15 @@ class LargeIntMul
 			// Time Complexity 1st recursive call T(n/3)
 			NUMSTRUCT term1 = padzeros(modified_mul_rec(x2,y2),(m*4))  ;		// (x2*y2) * 10 ^ 4m
 	
-			// Time Complexity 2 recursive calls 3T(n/3)
+			// Time Complexity 2nd recursive calls 3T(n/3)
 			NUMSTRUCT term2 = padzeros(add(modified_mul_rec(x2,y1), modified_mul_rec(y2,x1)),3*m);	// ( ( x2*y1 ) + ( y2*x1 ) ) * 10 ^ 3m 
 
-			// Time Complexity 3 recursive calls 6T(n/3)
+			// Time Complexity 3rd recursive calls 6T(n/3)
 			NUMSTRUCT term3 = padzeros(add(add(modified_mul_rec(x2,y0),modified_mul_rec(x1,y1)),modified_mul_rec(y2,x0)),2*m);	// ( x2y0 + x1y1 + y2x0 ) * 10 ^ 2m
-			// Time Complexity 2 recursive calls 8T(n/3)
+			// Time Complexity 4th recursive calls 8T(n/3)
 			NUMSTRUCT term4 = padzeros(add(modified_mul_rec(x1,y0),modified_mul_rec(y1,x0)),m);
 
-			// Time Complexity 1 recursive call 9T(n/2)
+			// Time Complexity 5th recursive call 9T(n/2)
 			NUMSTRUCT term5 = modified_mul_rec(x0,y0);
 
 
@@ -637,8 +637,7 @@ int main(int argc, char * argv[])
 
        	LargeIntMul m1(random1,random2);
 	cout << "Large Integer Multiplication n/2 : " << m1.multiplication() << endl;
-
 	cout << "Large Integer Muliplication n/3  : " << m1.mod_multiplication() << endl ;
-	//cout << "Basic multiplication algorithm   : " << m1.multiplication_verify() << endl;
+	cout << "Normal multiplication algorithm   : " << m1.multiplication_verify() << endl;
 }
 
